@@ -2,8 +2,9 @@ import javax.swing.*;
 
 
 public class GUI {
+    JFrame frame;
 
-    public static void main(String[] args) {
+    public static void initiate(){
 
         JFrame frame = new JFrame();
         frame.setSize(640,480);
@@ -15,7 +16,7 @@ public class GUI {
         panel.setLayout(null);
 
         JLabel label = new JLabel("Title");
-        label.setBounds(50, 0, 100, 50);
+        label.setBounds(0,0,640,480);
         panel.add(label);
 
         frame.setVisible(true);

@@ -2,18 +2,15 @@ import java.awt.*;
 import java.io.File;
 
 public class Item {
+    private String title;
     private int metascore;
     private double userscore;
     private List genres;
     private File image;
     private String description;
 
-    public Item(int mscore, int uscore, List givenGenres, File picture, String desc){
-        metascore = mscore;
-        userscore = uscore;
-        genres = givenGenres;
-        image = picture;
-        description = desc;
+    public String getTitle() {
+        return title;
     }
 
     public int getMetascore() {
@@ -24,15 +21,39 @@ public class Item {
         return userscore;
     }
 
-    public List getGenres(){
+    public List getGenres() {
         return genres;
     }
 
-    public File getImage(){
+    public File getImage() {
         return image;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
+    }
+
+    public void setMetascore(int score) {
+        metascore = score;
+    }
+
+    public void setUserscore(double score) {
+        userscore = score;
+    }
+
+    public void setGenres(List genres) {
+        this.genres = genres;
+    }
+
+    public void setImage(File image) {
+        this.image = image;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
