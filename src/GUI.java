@@ -3,8 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-
 
 public class GUI {
 
@@ -16,6 +14,9 @@ public class GUI {
     public JLabel rating;
     public JButton thumbsUp;
     public JButton thumbsDown;
+    public JLabel runtime;
+    public JLabel genres;
+    public JLabel score;
 
 
     public GUI(){
@@ -23,6 +24,7 @@ public class GUI {
         frame.setSize(1280,720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
+        frame.setTitle("Wampus");
 
         panel = new JPanel();
         panel.setLayout(null);
@@ -36,7 +38,6 @@ public class GUI {
         titleImg = new JLabel(pic);
         titleImg.setBounds(0,175, 1280, 250);
         panel.add(titleImg);
-        refresh();
     }
 
     public void description(String text){
@@ -44,9 +45,8 @@ public class GUI {
         description = new JTextArea(text);
         description.setLineWrap(true);
         description.setBounds(160, 425, 960, 100);
-        description.setFont(new Font("Serif", Font.PLAIN, 14));
+        description.setFont(new Font("Serif", Font.PLAIN, 16));
         panel.add(description);
-        refresh();
     }
 
     public void title(String text){
@@ -61,33 +61,49 @@ public class GUI {
         removeOld(rating);
         rating = new JLabel("Rating: " + text, SwingConstants.CENTER);
         rating.setBounds(560, 500, 160, 75);
-        rating.setFont(new Font("Serif", Font.PLAIN, 14));
+        rating.setFont(new Font("Serif", Font.PLAIN, 20));
         panel.add(rating);
     }
 
-    public void thumbs(){
-        removeOld(thumbsUp);
-        removeOld(thumbsDown);
-        ImageIcon up = new ImageIcon("/img/thumbsup.png");
-        ImageIcon down = new ImageIcon("img/thumbsdown.png");
-        thumbsUp = new JButton(up);
-        thumbsUp.setBounds(0,500, 128, 128);
-        thumbsDown = new JButton(down);
-        thumbsDown.setBounds(0,0, 128, 128);
-        panel.add(thumbsUp);
-        panel.add(thumbsDown);
-        refresh();
-    }
-
-    private void removeOld(Component comp){
+    public void removeOld(Component comp){
         if (comp != null){
             panel.remove(comp);
         }
     }
+    public void genres(String text){
+        removeOld(genres);
+        genres = new JLabel("Genres: " + text.substring(1,text.length()-1), SwingConstants.CENTER);
+        genres.setBounds(440, 580, 400, 75);
+        genres.setFont(new Font("Serif", Font.PLAIN, 20));
+        panel.add(genres);
+    }
 
-    private void refresh(){
+    public void runtime(int time){
+        removeOld(runtime);
+        runtime = new JLabel("Runtime: " + time + " minutes", SwingConstants.CENTER);
+        runtime.setBounds(540, 540, 200, 75);
+        runtime.setFont(new Font("Serif", Font.PLAIN, 20));
+        panel.add(runtime);
+    }
+
+    public void score(int metacriticScore){
+        removeOld(score);
+        score = new JLabel("" + metacriticScore, SwingConstants.CENTER);
+        score.setBounds(496, 365, 60, 60);
+        score.setFont(new Font("Serif", Font.PLAIN, 20));
+        score.setOpaque(true);
+        if (metacriticScore >= 61){
+            score.setBackground(Color.green);
+        } else if (metacriticScore >= 40){
+            score.setBackground(Color.yellow);
+        } else {
+            score.setBackground(Color.red);
+        }
+        panel.add(score);
+    }
+
+    public void refresh(){
         frame.validate();
         frame.repaint();
     }
-
 }

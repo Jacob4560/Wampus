@@ -1,7 +1,3 @@
-import org.jsoup.select.Elements;
-
-import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 
 public class Item {
@@ -17,6 +13,7 @@ public class Item {
     private String rating;
     private String imageUrl;
     public ArrayList<String> genres;
+    public Item currItem;
 
     public Item(){
         genres = new ArrayList<>();
@@ -28,9 +25,7 @@ public class Item {
 
     public String getUrl(){ return url; }
 
-    public int getMetaScore() {
-        return metaScore;
-    }
+    public int getMetaScore() { return metaScore; }
 
     public ArrayList<String> getGenres() { return genres; }
 
