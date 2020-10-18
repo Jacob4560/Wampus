@@ -9,10 +9,9 @@ import java.util.*;
 
 public class runApp {
 
-    private static int currIndex;
     private static LinkedHashMap<String, Double> genreRatings;
     // Chooses how many movies from 1-100 to choose from.
-    public static final int topNumber = 10;
+    public static int topNumber = 30;
 
     public static void main(String[] args) throws IOException, InterruptedException  {
 
@@ -20,39 +19,50 @@ public class runApp {
         GUI gui = new GUI();
         // Wait for just a minute (this sucked to implement).
         String choice = chooseGenre(gui);
+        topNumber = chooseNumber(gui);
         clearInitial(gui);
         // Connects to Metacritic for parsing reviews.
         Document d = Jsoup.connect("https://www.metacritic.com/browse/movies/genre/metascore/" + choice).get();
         genreRatings = new LinkedHashMap<>();
-        LinkedList<Item> items = new LinkedList<>();
+        PriorityQueue<Item> items = new PriorityQueue<>();
 
         getItemInfo(d, items);
 
-        printAllItems(items);
+        //printAllItems(items);
+        gui.removeOld(gui.loading);
         thumbs(gui, items);
 
-        initiateRatingGUI(gui, items, new Random());
+        initiateRatingGUI(gui, items);
 
     }
 
     public static String chooseGenre(GUI gui) throws InterruptedException{
         gui.wampusTitle();
-        String[] genreArray = new String[]{"action","adventure","animation","biography","comedy","crime","documentary",
-                            "drama","family","fantasy"};
+        String[] genreArray = new String[]{"action","adventure","animation","biography","comedy",
+                            "crime","documentary", "drama","family","fantasy","film-noir",
+                            "history","horror","music","musical","mystery", "news",
+                            "romance","sci-fi","sport","thriller","war","western"};
         gui.genreChoices(genreArray);
         gui.startProgram();
-        return gui.genreChoices.getSelectedItem().toString();
+        return Objects.requireNonNull(gui.genreChoices.getSelectedItem()).toString();
+    }
+
+    public static int chooseNumber(GUI gui) throws InterruptedException {
+        return gui.movieNumber();
     }
 
     public static void clearInitial(GUI gui){
         gui.removeOld(gui.wampusTitle);
         gui.removeOld(gui.genreChoices);
         gui.removeOld(gui.startProgram);
+        gui.removeOld(gui.movieNumber);
+        gui.loading("Loading pages...");
         gui.refresh();
     }
-    // Debug program which prints out all the items in the item list by showing
+
+    // Debug method which prints out all the items in the item list by showing
     // some of their values (rating, title, etc.).
-    public static void printAllItems(LinkedList<Item> items){
+    private static void printAllItems(PriorityQueue<Item> items){
         for (Item item: items){
             System.out.println("Title: " + item.getTitle());
             System.out.println("Score: " + item.getMetaScore());
@@ -67,7 +77,7 @@ public class runApp {
 
     // Method which reads the top 100 of a genre from Metacritic. Adds items to the
     // given LinkedList with a title, score, etc.
-    public static void getItemInfo(Document d, LinkedList<Item> items) throws IOException {
+    public static void getItemInfo(Document d, PriorityQueue<Item> items) throws IOException {
         Elements titles = d.select(".clamp-summary-wrap h3");
         Elements scores = d.select(".metascore_anchor");
         Elements summary = d.select(".summary");
@@ -79,6 +89,7 @@ public class runApp {
             // Each item has 3 score elements, so we have to use 3*i.
             item.setMetaScore(Integer.parseInt(scores.eq(3*i).text()));
             item.setUrl(urls.eq(i).attr("href"));
+            item.genreRatingsList = genreRatings;
             items.add(item);
         }
 
@@ -90,30 +101,31 @@ public class runApp {
             item.setRating(d2.select(".rating > span").eq(1).text());
             String runtime = d2.select(".runtime > span").eq(1).text();
             item.setImageUrl(d2.select(".summary_img").eq(0).attr("src"));
-            item.setRuntime(Integer.parseInt(runtime.substring(0, runtime.indexOf(" "))));
+            if (runtime.length() > 1){
+                item.setRuntime(Integer.parseInt(runtime.substring(0, runtime.indexOf(" "))));
+            }
             for (int i = 0; i < genres.size(); i++){
                 item.genres.add((genres.eq(i).text()));
             }
             val++;
-            System.out.println(val + "/" + topNumber);
         }
 
     }
 
-    private static void initiateRatingGUI(GUI gui, LinkedList<Item> items, Random randy) throws IOException{
-        int randomIndex = randy.nextInt(items.size());
-        gui.titleImage(items.get(randomIndex).getImageUrl());
-        gui.title(items.get(randomIndex).getTitle());
-        gui.description(items.get(randomIndex).getDescription());
-        gui.rating(items.get(randomIndex).getRating());
-        gui.runtime(items.get(randomIndex).getRuntime());
-        gui.genres(items.get(randomIndex).getGenres().toString());
-        gui.score(items.get(randomIndex).getMetaScore());
+    private static void initiateRatingGUI(GUI gui, PriorityQueue<Item> items) throws IOException{
+        gui.titleImage(items.peek().getImageUrl());
+        gui.title(items.peek().getTitle());
+        gui.description(items.peek().getDescription());
+        gui.rating(items.peek().getRating());
+        gui.runtime(items.peek().getRuntime());
+        gui.genres(items.peek().getGenres().toString());
+        gui.score(items.peek().getMetaScore());
+        gui.moviesLeft(items.size());
         gui.refresh();
-        currIndex = randomIndex;
+
     }
 
-    public static void thumbs(GUI gui, LinkedList<Item> items) throws IOException{
+    public static void thumbs(GUI gui, PriorityQueue<Item> items) throws IOException{
         gui.removeOld(gui.thumbsUp);
         gui.removeOld(gui.thumbsDown);
         gui.thumbsUp = new JButton(new ImageIcon(ImageIO.read(runApp.class.getResource("img/thumbsup.png"))));
@@ -128,9 +140,7 @@ public class runApp {
                     rateItem(1.2, items);
                 }
                 if (items.size() > 0){
-                    initiateRatingGUI(gui, items, new Random());
-                } else {
-                    //clear();
+                    initiateRatingGUI(gui, items);
                 }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -142,9 +152,7 @@ public class runApp {
                     rateItem(0.8, items);
                 }
                 if (items.size() > 0){
-                    initiateRatingGUI(gui, items, new Random());
-                } else {
-                    //clear();
+                    initiateRatingGUI(gui, items);
                 }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -154,15 +162,15 @@ public class runApp {
         gui.panel.add(gui.thumbsDown);
     }
 
-    public static void rateItem(double factor, LinkedList<Item> items){
-        for (String genre: items.get(currIndex).getGenres()){
+    public static void rateItem(double factor, PriorityQueue<Item> items){
+        for (String genre: items.peek().getGenres()){
             if (genreRatings.containsKey(genre)){
                 genreRatings.put(genre, genreRatings.get(genre) * factor);
             } else{
                 genreRatings.put(genre, factor);
             }
         }
-        items.remove(currIndex);
+        items.remove();
     }
 }
 

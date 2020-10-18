@@ -25,6 +25,13 @@ public class GUI implements EventListener {
     public JLabel wampusTitle;
     public JComboBox genreChoices;
     public JButton startProgram;
+    public JTextField movieNumber;
+
+    public JLabel loading;
+
+    public JLabel moviesLeft;
+
+
 
     public boolean wait;
 
@@ -54,7 +61,8 @@ public class GUI implements EventListener {
         description = new JTextArea(text);
         description.setLineWrap(true);
         description.setBounds(160, 425, 960, 100);
-        description.setFont(new Font("Serif", Font.PLAIN, 16));
+        description.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        description.setEditable(false);
         panel.add(description);
     }
 
@@ -115,7 +123,7 @@ public class GUI implements EventListener {
     public void wampusTitle() {
         wampusTitle = new JLabel("WAMPUS", SwingConstants.CENTER);
         wampusTitle.setBounds(0, -100, 1280, 720);
-        wampusTitle.setFont(new Font("Serif", Font.BOLD, 70));
+        wampusTitle.setFont(new Font("Serif", Font.BOLD, 80));
         wampusTitle.setForeground(new Color(128, 0, 128));
         panel.add(wampusTitle);
 
@@ -139,6 +147,40 @@ public class GUI implements EventListener {
         }
     }
 
+    public void loading(String text){
+        loading = new JLabel(text, SwingConstants.CENTER);
+        loading.setBounds(0,0,1280,720);
+        loading.setFont(new Font("Serif", Font.BOLD, 60));
+        panel.add(loading);
+    }
+
+    public void moviesLeft(int amount){
+        removeOld(moviesLeft);
+        moviesLeft = new JLabel("Movies left to sort: " + amount, SwingConstants.CENTER);
+        moviesLeft.setBounds(0,0,1280,100);
+        moviesLeft.setFont(new Font("Serif", Font.BOLD, 14));
+        panel.add(moviesLeft);
+    }
+
+    public int movieNumber() throws InterruptedException {
+        movieNumber = new JTextField("Enter the number of movies to scan (1-100)");
+        movieNumber.setBounds(384, 448, 512, 20);
+        movieNumber.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        panel.add(movieNumber);
+        refresh();
+        movieNumber.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                wait = false;
+            }
+        });
+        wait = true;
+        while(wait){
+            Thread.sleep(100);
+        }
+        return Integer.parseInt(movieNumber.getText());
+    }
+
     public void refresh(){
         panel.revalidate();
         panel.repaint();
@@ -151,9 +193,5 @@ public class GUI implements EventListener {
             wait = false;
         }
 
-        public void refresh() {
-            frame.validate();
-            frame.repaint();
-        }
     }
 }
