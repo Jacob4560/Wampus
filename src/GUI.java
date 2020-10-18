@@ -1,11 +1,15 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
+import java.util.EventListener;
 
-public class GUI {
+public class GUI implements EventListener {
 
+    // This is not good. Use a list next time.
     public JFrame frame;
     public JPanel panel;
     public JLabel titleImg;
@@ -18,10 +22,15 @@ public class GUI {
     public JLabel genres;
     public JLabel score;
 
+    public JLabel wampusTitle;
+    public JComboBox genreChoices;
+    public JButton startProgram;
 
-    public GUI(){
+    public boolean wait;
+
+    public GUI() {
         frame = new JFrame();
-        frame.setSize(1280,720);
+        frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setTitle("Wampus");
@@ -36,11 +45,11 @@ public class GUI {
         removeOld(titleImg);
         ImageIcon pic = new ImageIcon(ImageIO.read(new URL(url)));
         titleImg = new JLabel(pic);
-        titleImg.setBounds(0,175, 1280, 250);
+        titleImg.setBounds(0, 175, 1280, 250);
         panel.add(titleImg);
     }
 
-    public void description(String text){
+    public void description(String text) {
         removeOld(description);
         description = new JTextArea(text);
         description.setLineWrap(true);
@@ -49,7 +58,7 @@ public class GUI {
         panel.add(description);
     }
 
-    public void title(String text){
+    public void title(String text) {
         removeOld(titleText);
         titleText = new JLabel(text, SwingConstants.CENTER);
         titleText.setBounds(0, 50, 1280, 75);
@@ -57,7 +66,7 @@ public class GUI {
         panel.add(titleText);
     }
 
-    public void rating(String text){
+    public void rating(String text) {
         removeOld(rating);
         rating = new JLabel("Rating: " + text, SwingConstants.CENTER);
         rating.setBounds(560, 500, 160, 75);
@@ -65,20 +74,21 @@ public class GUI {
         panel.add(rating);
     }
 
-    public void removeOld(Component comp){
-        if (comp != null){
+    public void removeOld(Component comp) {
+        if (comp != null) {
             panel.remove(comp);
         }
     }
-    public void genres(String text){
+
+    public void genres(String text) {
         removeOld(genres);
-        genres = new JLabel("Genres: " + text.substring(1,text.length()-1), SwingConstants.CENTER);
-        genres.setBounds(440, 580, 400, 75);
+        genres = new JLabel("Genres: " + text.substring(1, text.length() - 1), SwingConstants.CENTER);
+        genres.setBounds(128, 580, 1024, 75);
         genres.setFont(new Font("Serif", Font.PLAIN, 20));
         panel.add(genres);
     }
 
-    public void runtime(int time){
+    public void runtime(int time) {
         removeOld(runtime);
         runtime = new JLabel("Runtime: " + time + " minutes", SwingConstants.CENTER);
         runtime.setBounds(540, 540, 200, 75);
@@ -86,15 +96,15 @@ public class GUI {
         panel.add(runtime);
     }
 
-    public void score(int metacriticScore){
+    public void score(int metacriticScore) {
         removeOld(score);
         score = new JLabel("" + metacriticScore, SwingConstants.CENTER);
         score.setBounds(496, 365, 60, 60);
         score.setFont(new Font("Serif", Font.PLAIN, 20));
         score.setOpaque(true);
-        if (metacriticScore >= 61){
+        if (metacriticScore >= 61) {
             score.setBackground(Color.green);
-        } else if (metacriticScore >= 40){
+        } else if (metacriticScore >= 40) {
             score.setBackground(Color.yellow);
         } else {
             score.setBackground(Color.red);
@@ -102,8 +112,48 @@ public class GUI {
         panel.add(score);
     }
 
+    public void wampusTitle() {
+        wampusTitle = new JLabel("WAMPUS", SwingConstants.CENTER);
+        wampusTitle.setBounds(0, -100, 1280, 720);
+        wampusTitle.setFont(new Font("Serif", Font.BOLD, 70));
+        wampusTitle.setForeground(new Color(128, 0, 128));
+        panel.add(wampusTitle);
+
+    }
+
+    public void genreChoices(String[] genres) throws InterruptedException {
+        genreChoices = new JComboBox(genres);
+        genreChoices.setBounds(320, 347, 640, 50);
+        panel.add(genreChoices);
+        refresh();
+    }
+
+    public void startProgram() throws InterruptedException {
+        startProgram = new JButton("Search");
+        startProgram.setBounds(320, 397, 640, 50);
+        panel.add(startProgram);
+        startProgram.addActionListener(new startButtonAction());
+        wait = true;
+        while(wait){
+            Thread.sleep(100);
+        }
+    }
+
     public void refresh(){
-        frame.validate();
-        frame.repaint();
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    class startButtonAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            wait = false;
+        }
+
+        public void refresh() {
+            frame.validate();
+            frame.repaint();
+        }
     }
 }

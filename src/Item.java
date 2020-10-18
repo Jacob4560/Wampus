@@ -13,7 +13,6 @@ public class Item {
     private String rating;
     private String imageUrl;
     public ArrayList<String> genres;
-    public Item currItem;
 
     public Item(){
         genres = new ArrayList<>();
@@ -50,4 +49,5 @@ public class Item {
     public void setRuntime(int runtime){ this.runtime = runtime; }
 
     public void setImageUrl(String imageUrl){ this.imageUrl = imageUrl; }
+
 }
