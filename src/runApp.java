@@ -38,13 +38,13 @@ public class runApp {
 
     public static String chooseGenre(GUI gui) throws InterruptedException{
         gui.wampusTitle();
-        String[] genreArray = new String[]{"action","adventure","animation","biography","comedy",
-                            "crime","documentary", "drama","family","fantasy","film-noir",
-                            "history","horror","music","musical","mystery", "news",
-                            "romance","sci-fi","sport","thriller","war","western"};
+        String[] genreArray = new String[]{"Select a Genre", "Action","Adventure","Animation","Biography","Comedy",
+                            "Crime","Documentary", "Drama","Family","Fantasy","Film-noir",
+                            "History","Horror","Music","Musical","Mystery", "Mews",
+                            "Romance","Sci-fi","Sport","Thriller","War","Western"};
         gui.genreChoices(genreArray);
         gui.startProgram();
-        return Objects.requireNonNull(gui.genreChoices.getSelectedItem()).toString();
+        return Objects.requireNonNull(gui.genreChoices.getSelectedItem()).toString().toLowerCase();
     }
 
     public static int chooseNumber(GUI gui) throws InterruptedException {
