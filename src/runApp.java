@@ -40,7 +40,7 @@ public class runApp {
         gui.wampusTitle();
         String[] genreArray = new String[]{"Select a Genre", "Action","Adventure","Animation","Biography","Comedy",
                             "Crime","Documentary", "Drama","Family","Fantasy","Film-noir",
-                            "History","Horror","Music","Musical","Mystery", "Mews",
+                            "History","Horror","Music","Musical","Mystery", "News",
                             "Romance","Sci-fi","Sport","Thriller","War","Western"};
         gui.genreChoices(genreArray);
         gui.startProgram();
