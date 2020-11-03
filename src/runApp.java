@@ -11,7 +11,8 @@ public class runApp {
 
     private static LinkedHashMap<String, Double> genreRatings;
     // Chooses how many movies from 1-100 to choose from.
-    public static int topNumber = 30;
+    public static int topNumber;
+    private PriorityQueue likedItems = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException, InterruptedException  {
 
@@ -36,11 +37,11 @@ public class runApp {
 
     }
 
-    public static String chooseGenre(GUI gui) throws InterruptedException{
+    public static String chooseGenre(GUI gui) throws InterruptedException {
         gui.wampusTitle();
         String[] genreArray = new String[]{"Select a Genre", "Action","Adventure","Animation","Biography","Comedy",
                             "Crime","Documentary", "Drama","Family","Fantasy","Film-noir",
-                            "History","Horror","Music","Musical","Mystery", "Mews",
+                            "History","Horror","Music","Musical","Mystery", "News",
                             "Romance","Sci-fi","Sport","Thriller","War","Western"};
         gui.genreChoices(genreArray);
         gui.startProgram();
@@ -125,7 +126,7 @@ public class runApp {
 
     }
 
-    public static void thumbs(GUI gui, PriorityQueue<Item> items) throws IOException{
+    public static void thumbs(GUI gui, PriorityQueue<Item> items, List likedItems) throws IOException {
         gui.removeOld(gui.thumbsUp);
         gui.removeOld(gui.thumbsDown);
         gui.thumbsUp = new JButton(new ImageIcon(ImageIO.read(runApp.class.getResource("img/thumbsup.png"))));
@@ -136,8 +137,11 @@ public class runApp {
         gui.thumbsDown.setContentAreaFilled(false);
         gui.thumbsUp.addActionListener(e -> {
             try {
+                likedItems.add(items.peek());
+                // debug statement
+                System.out.println(items.peek().getTitle());
                 if (!items.isEmpty()) {
-                    rateItem(1.2, items);
+                    rateItem(1.25, items);
                 }
                 if (items.size() > 0){
                     initiateRatingGUI(gui, items);
@@ -166,7 +170,7 @@ public class runApp {
         for (String genre: items.peek().getGenres()){
             if (genreRatings.containsKey(genre)){
                 genreRatings.put(genre, genreRatings.get(genre) * factor);
-            } else{
+            } else {
                 genreRatings.put(genre, factor);
             }
         }
