@@ -181,6 +181,18 @@ public class GUI implements EventListener {
         return Integer.parseInt(movieNumber.getText());
     }
 
+    public void displayFinal() {
+        removeOld(moviesLeft);
+        removeOld(titleText);
+        removeOld(description);
+        removeOld(thumbsDown);
+        removeOld(thumbsUp);
+        removeOld(rating);
+        removeOld(runtime);
+        removeOld(genres);
+        removeOld(score);
+    }
+
     public void refresh(){
         panel.revalidate();
         panel.repaint();

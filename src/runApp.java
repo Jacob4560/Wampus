@@ -12,7 +12,7 @@ public class runApp {
     private static LinkedHashMap<String, Double> genreRatings;
     // Chooses how many movies from 1-100 to choose from.
     public static int topNumber;
-    private PriorityQueue likedItems = new PriorityQueue<>();
+    private static PriorityQueue likedItems = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException, InterruptedException  {
 
@@ -126,7 +126,7 @@ public class runApp {
 
     }
 
-    public static void thumbs(GUI gui, PriorityQueue<Item> items, List likedItems) throws IOException {
+    public static void thumbs(GUI gui, PriorityQueue<Item> items) throws IOException {
         gui.removeOld(gui.thumbsUp);
         gui.removeOld(gui.thumbsDown);
         gui.thumbsUp = new JButton(new ImageIcon(ImageIO.read(runApp.class.getResource("img/thumbsup.png"))));
@@ -138,13 +138,13 @@ public class runApp {
         gui.thumbsUp.addActionListener(e -> {
             try {
                 likedItems.add(items.peek());
-                // debug statement
-                System.out.println(items.peek().getTitle());
                 if (!items.isEmpty()) {
                     rateItem(1.25, items);
                 }
                 if (items.size() > 0){
                     initiateRatingGUI(gui, items);
+                } else {
+                    gui.displayFinal();
                 }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -157,6 +157,8 @@ public class runApp {
                 }
                 if (items.size() > 0){
                     initiateRatingGUI(gui, items);
+                } else {
+                    gui.displayFinal();
                 }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -176,5 +178,6 @@ public class runApp {
         }
         items.remove();
     }
+    
 }
 
